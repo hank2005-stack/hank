@@ -140,3 +140,47 @@ for i, idx in enumerate(random_indices):
 
 plt.suptitle("Random Test Sample Predictions")
 plt.show()
+
+
+y_pred = model.predict(X_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = np.argmax(Z_test, axis=1)
+
+
+correct_idxs   = np.where(y_pred_classes == y_true)[0]
+incorrect_idxs = np.where(y_pred_classes != y_true)[0]
+
+
+num_samples = 5
+num_corr = min(len(correct_idxs), num_samples)
+num_inc  = min(len(incorrect_idxs), num_samples)
+
+
+sel_corr = np.random.choice(correct_idxs,   num_corr, replace=False)
+sel_inc  = np.random.choice(incorrect_idxs, num_inc,  replace=False)
+
+
+plt.figure(figsize=(15, 6))
+
+
+for i, idx in enumerate(sel_corr):
+    img = X_test[idx]
+    true_label = list(FLOWER_DIRS.keys())[y_true[idx]]
+    pred_label = list(FLOWER_DIRS.keys())[y_pred_classes[idx]]
+    plt.subplot(2, num_samples, i+1)
+    plt.imshow(img)
+    plt.axis('off')
+    plt.title(f"True: {true_label}\nPred: {pred_label}", color='green')
+
+
+for i, idx in enumerate(sel_inc):
+    img = X_test[idx]
+    true_label = list(FLOWER_DIRS.keys())[y_true[idx]]
+    pred_label = list(FLOWER_DIRS.keys())[y_pred_classes[idx]]
+    plt.subplot(2, num_samples, num_samples + i+1)
+    plt.imshow(img)
+    plt.axis('off')
+    plt.title(f"True: {true_label}\nPred: {pred_label}", color='red')
+
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.show()
